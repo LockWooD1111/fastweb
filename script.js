@@ -138,12 +138,23 @@ form.addEventListener('submit', async (e) => {
 
   if (!validateForm()) return;
 
-  // Simulate submission
   submitBtn.disabled = true;
   btnText.textContent = 'Sending...';
   submitBtn.style.opacity = '0.7';
 
-  await new Promise(resolve => setTimeout(resolve, 1400));
+  const formData = new FormData(form);
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  });
+
+  if (!response.ok) {
+    btnText.textContent = 'Error. Try again.';
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '1';
+    return;
+  }
 
   form.style.display = 'none';
   formSuccess.classList.add('show');
